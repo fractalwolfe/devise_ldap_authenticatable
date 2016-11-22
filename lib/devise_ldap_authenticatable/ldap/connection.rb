@@ -236,7 +236,8 @@ module Devise
           filter = Net::LDAP::Filter.eq(@attribute.to_s, @login.to_s)
           ldap_entry = nil
           match_count = 0
-          @ldap.search(:filter => filter) {|entry| ldap_entry = entry; match_count+=1}
+          attrs = ['cn', 'mail', 'givenName', 'sn', 'sAMAccountName']
+          @ldap.search(:filter => filter, :attributes => attrs) {|entry| ldap_entry = entry; match_count+=1}
           op_result= @ldap.get_operation_result
           if op_result.code!=0 then
             DeviseLdapAuthenticatable::Logger.send("LDAP Error #{op_result.code}: #{op_result.message}")
